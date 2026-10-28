@@ -1,5 +1,4 @@
 # Environment files & API Keys (CRITICAL SECURITY)
-.env
 .env*.local
 *.env
 frontend/.env
@@ -36,3 +35,7 @@ Thumbs.db
 # TypeScript build info
 *.tsbuildinfo
 frontend/*.tsbuildinfo
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
