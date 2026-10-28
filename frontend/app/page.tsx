@@ -22,6 +22,9 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+// Dynamic API base URL: Uses NEXT_PUBLIC_API_URL on cloud (Render/Vercel) or localhost:8000 on local dev
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+
 interface KPI {
   month: string;
   total_employees: number;
@@ -62,8 +65,8 @@ export default function CEODashboard() {
   const loadData = () => {
     setLoadingData(true);
     Promise.all([
-      fetch("http://localhost:8000/api/kpis").then((res) => res.json()),
-      fetch("http://localhost:8000/api/payroll").then((res) => res.json())
+      fetch(`${API_BASE}/api/kpis`).then((res) => res.json()),
+      fetch(`${API_BASE}/api/payroll`).then((res) => res.json())
     ])
       .then(([kpiData, payrollData]) => {
         setKpis(kpiData);
@@ -629,7 +632,7 @@ function ChatWidget({ isDarkMode }: { isDarkMode: boolean }) {
     abortControllerRef.current = controller;
 
     try {
-      const res = await fetch("http://localhost:8000/api/chat", {
+      const res = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: textToSend }),
@@ -643,7 +646,7 @@ function ChatWidget({ isDarkMode }: { isDarkMode: boolean }) {
       }
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "❌ Unable to connect to backend server. Make sure FastAPI is running on port 8000." }
+        { sender: "bot", text: `❌ Unable to connect to backend server (${API_BASE}). Make sure your Python backend is running.` }
       ]);
     } finally {
       setLoadingChat(false);
